@@ -28,31 +28,44 @@ int main()
 
     printf("Korg NTS-1 Custom Board used with MBED OS code by: J-W Smaal, running on Mbed OS %d.%d.%d.\n\n", MBED_MAJOR_VERSION, MBED_MINOR_VERSION, MBED_PATCH_VERSION);
 	printf("nts1.init() status %2X\n", nts1.init());
-	wait_ms(200);
+	wait_ms(30);
+	nts1.idle();
+	wait_ms(50);
 
     while (true)
     {
-		printf("Potmeter value is: %u\r\n", ain.read_u16());
         led4 = !led4;
-//		led2 = !led2; 
-//		d8 = !d8;
+		printf("Potmeter value is: %u\r\n", ain.read_u16()>>8);
+		nts1.paramChange(	NTS1::PARAM_ID_REV_DEPTH, 
+							NTS1::PARAM_SUBID_SYS_GLOBAL_BASE , 
+							(ain.read_u16()>>9));
+		nts1.idle();
 
 
-		for(i=60; i < 70; i++) {
-			nts1.noteOn(i, 100);
-			wait_ms(40);
-			nts1.idle();
+		nts1.paramChange(	NTS1::PARAM_ID_OSC_SHAPE, 
+							NTS1::PARAM_SUBID_SYS_GLOBAL_BASE , 
+							(ain.read_u16()>>9));
 
-			nts1.noteOff(i);
-			wait_ms(40);
-			nts1.idle();  
-		}
-		wait_ms(200);
-		nts1.idle(); 
-		//printf("nts1.idle() called (board should not reset!)\r\n");
-        
-        //thread_sleep_for(WAIT_TIME_MS);
-		//ThisThread::sleep_for(500ms);
-    }
+		nts1.noteOn(70, 100);
+		wait_ms(70);
+		nts1.idle();
+
+		nts1.noteOn(72, 100);
+		wait_ms(60);
+		nts1.idle();
+
+		nts1.noteOff(70);
+		wait_ms(10);
+		nts1.idle();
+		
+		nts1.noteOff(72);
+		wait_ms(10);
+		nts1.idle();
+
+		nts1.noteOn(74, 100);
+		wait_ms(150);
+		nts1.idle();
+}
+
 	nts1.teardown(); 
 }
