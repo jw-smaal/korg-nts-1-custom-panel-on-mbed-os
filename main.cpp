@@ -1,6 +1,8 @@
-/* mbed Microcontroller Library
- * Copyright (c) 2019 ARM Limited
- * SPDX-License-Identifier: Apache-2.0
+/** Example for the Korg NTS-1 Custom panel on MBED OS 
+ *  @author Jan-Willem Smaal <usenet@gispen.org> 
+ * 
+ * 
+ * @license: BSD 3-Clause License
  */
 
 #include "AnalogIn.h"
@@ -44,8 +46,8 @@ int main()
 	//DigitalOut d8(PA_9);
 	AnalogIn ain(PC_2);
 	uint8_t i, j;
-	
-	 
+
+
 	for(i = 0; i < 4; i++ ) {
 		wait_ms(100); 
 		nts1.idle();
@@ -56,7 +58,9 @@ int main()
 		wait_ms(100); 
 		nts1.idle();
 	}
-    printf("Korg NTS-1 Custom Board used with MBED OS code by: J-W Smaal, running on Mbed OS %d.%d.%d.\n\n", MBED_MAJOR_VERSION, MBED_MINOR_VERSION, MBED_PATCH_VERSION);
+    printf("Korg NTS-1 Custom Board used with MBED OS code by: J-W Smaal, \
+			running on Mbed OS %d.%d.%d.\n\n", \ 
+			MBED_MAJOR_VERSION, MBED_MINOR_VERSION, MBED_PATCH_VERSION);
 	printf("nts1.init() status %2X\n", nts1.init());
 	
 	for(i = 0; i < 4; i++ ) {
