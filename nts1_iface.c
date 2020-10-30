@@ -702,6 +702,7 @@ nts1_status_t nts1_idle()
     // 受信Bufferにデータあり
     s_rx_msg_handler(s_spi_rx_buf_read());
   }
+  return (nts1_status_t)0;
 }
 
 // ----------------------------------------------------
