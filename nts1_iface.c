@@ -265,7 +265,9 @@ static inline void s_spi_enable_pins()
   /* Enable SCK, MOSI, MISO. No NSS. */
   /* Peripherals alternate function */
   gpio.Mode = GPIO_MODE_AF_PP;
-  gpio.Speed = GPIO_SPEED_FREQ_HIGH;
+  gpio.Speed = GPIO_SPEED_FREQ_HIGH;  
+  /* gpio.Speed = GPIO_SPEED_FREQ_LOW;  */ 
+  
   gpio.Pull = GPIO_NOPULL;
   gpio.Alternate = SPI_GPIO_AF;
   
@@ -519,21 +521,22 @@ static void s_rx_msg_handler(uint8_t data)
       }
         
       switch (s_panel_rx_data[1]) {
-      case k_rx_subcmd_other_panelid: // Panel ID指定（"ppp"は残しているのここにはこない）
+      case k_rx_subcmd_other_panelid: 
+		// Panel ID specification ("ppp" is left but not used)
         /*++++++++++++++++++++++++++++++++++++++++++++++
-          CMD6-0 :PanelID指定。
-          このケースのみ、ppp=7を指定する。
-          1st    :[1][0][111][110] ppp=7使用
+          CMD6-0 :PanelID specification 
+		  Specify ppp = use only 7 in this case.
+          1st    :[1][0][111][110] ppp= use 7 
           2nd    :[0][0000100] Size=4
           3rd    :[0][0000000] MessageID = 0
-          4th    :[0][0000PPP] 指定するPanelID番号。
+          4th    :[0][0000PPP] Specify panel ID number
           +++++++++++++++++++++++++++++++++++++++++++++*/
         if (s_panel_rx_data_cnt >= 3 && s_panel_rx_data[0] == 4) {
           s_panel_id = ((s_panel_rx_data[2] & 0x07) << 3) & PANEL_ID_MASK;
           s_dummy_tx_cmd = s_panel_id | 0xC7; // B'11ppp111;
-          // VersionをHOSTへ送信
+          // Send version to HOST 
           s_tx_cmd_other_version(false);
-          // All SW PatternをHOSTへ送信
+          // Send all SW Pattern to HOST
           s_tx_cmd_other_bootmode(true);
         }
         // Reset rx status
@@ -544,7 +547,8 @@ static void s_rx_msg_handler(uint8_t data)
       case k_rx_subcmd_other_stsreq:
         /*++++++++++++++++++++++++++++++++++++++++++++++
           CMD6-1 :Status Request
-          現在のSwitchPattern(CMD6-17)と、全ノブコマンドの送付要求。
+		  Request to send the current Switch Pattern (CMD6-17) 
+		  and all knob commands
           1st    :[1][0][ppp][110]
           2nd    :[0][0000011] Size=3
           3rd    :[0][0000001] MessageID = 1
@@ -558,8 +562,8 @@ static void s_rx_msg_handler(uint8_t data)
       case k_rx_subcmd_other_ackreq: // Panel ACK req
         /*++++++++++++++++++++++++++++++++++++++++++++++
           CMD6-3 :ACK request
-          Panelが正常動作しているかどうかの検査用。
-          Panelはこれを受けたらACKコマンドを返送する。
+		  For checking whether the Panel is operating normally.
+          When the Panel receives this, it returns an ACK command.
           1st    :[1][0][ppp][110]
           2nd    :[0][0000011] Size=3
           3rd    :[0][0000011] MessageID = 3
@@ -580,8 +584,8 @@ static void s_rx_msg_handler(uint8_t data)
     break;
   case k_rx_cmd_dummy:
   default:
-    s_panel_rx_status = 0;    // 保存ステータスをクリア
-    s_panel_rx_data_cnt = 0; // データカウントを初期化
+    s_panel_rx_status = 0;		// Clear save status/
+    s_panel_rx_data_cnt = 0;   // Initialize data count
     break;
   }
 }
@@ -593,49 +597,31 @@ extern void SPI_IRQ_HANDLER()
   volatile uint16_t sr;
   uint8_t txdata, rxdata;
   
-  // HOST -> PANEL 受信部
+  // HOST-> PANEL receiver
   while ((sr = SPI_PERIPH->SR) & SPI_SR_RXNE) {
-    rxdata = s_spi_raw_fifo_pop8(SPI_PERIPH); // DR読み出しでRXNEフラグがクリアされる
-    //if (sr & SPI_SR_OVR) {
-    /*
-    // Overrun Error occur
-    //OverCount++;
-    // ダミーバイトを受信バッファーに書込む。
-    if (!s_spi_rx_buf_write(0x87)) {
-      // RxBuf が一杯の時は、リセットする。
-      SPI_RX_BUF_RESET();
-      s_spi_rx_buf_write(0x87);
-    } else {
-      if (!s_spi_chk_rx_buf_space(32)) {
-        s_port_wait_ack();
-      } else { // バッファー残が復旧
-        s_port_startup_ack();
-      }
-    }
-    //*/
-  //} else { // if (rxdata & ~(PANEL_ID_MASK | PANEL_CMD_EMARK)) != 0x87) {
+    rxdata = s_spi_raw_fifo_pop8(SPI_PERIPH); //  The RXNE flag is cleared by reading DR
     if (!s_spi_rx_buf_write(rxdata)) {
-      // RxBuf が一杯の時は、リセットする。
+      // Reset when RxBuf is full.
       SPI_RX_BUF_RESET();
     } 
     else {
       if (!s_spi_chk_rx_buf_space(32)) {
          s_port_wait_ack();
-      } else { // バッファー残が復旧
+      } else { // Buffer balance is restored
          s_port_startup_ack();
       }
     }
    //}
   }
 
-  // HOST <- PANEL 送信部
+  // HOST <- PANEL transmitter 
   if (!SPI_TX_BUF_EMPTY()) { // 送信Bufferにデータあり
     txdata = s_spi_tx_buf_read();
     if (txdata & 0x80) { // Statusの時は、EndMarkを付加するかチェックする。
       if (!SPI_TX_BUF_EMPTY()) { // 送信Bufferに次に送信するデータあり
         txdata |= PANEL_CMD_EMARK;
         // Note: this will set endmark on almost any status, especially those who have pending data,
-        //       which seems to contradict the endmark common usage of marking only the last command of a group
+        // which seems to contradict the endmark common usage of marking only the last command of a group
       }
     }
     s_spi_raw_fifo_push8(SPI_PERIPH, txdata);
