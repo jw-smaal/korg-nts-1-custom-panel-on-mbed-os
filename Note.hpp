@@ -22,14 +22,17 @@
 class Note {
 public:
 	Note() noexcept {
+		printf("Note constructor default --");
 		number = 60;
 	};
 	Note(uint8_t midinote) noexcept {
+		printf("Note constructor --");
 		if(midinote < 128) {
 			number = midinote;
 		}
 	};
 	Note(int midinote) noexcept {
+		printf("Note constructor(int) --");
 		if(midinote < 128) {
 			number = (uint8_t) midinote;
 		}

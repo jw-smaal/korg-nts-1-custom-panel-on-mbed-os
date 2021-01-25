@@ -302,6 +302,7 @@ private:
 	
 	// -----------------------------------------------------------------------
 private:
+#ifndef MBED_MAJOR_VERSION 
 	/*
 	 * Scales definition in intervals.
 	 * TODO: work in progress
@@ -341,7 +342,8 @@ private:
 		{Iv::W, Iv::W, Iv::W, Iv::H, Iv::W, Iv::W, Iv::H},	// LYDIAN
 		{Iv::W, Iv::W, Iv::H, Iv::W, Iv::W, Iv::H, Iv::W}	// MIXOLYDIAN
 	} };
-	
+#endif 
+
 };
 
 

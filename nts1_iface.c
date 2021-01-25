@@ -265,8 +265,8 @@ static inline void s_spi_enable_pins()
   /* Enable SCK, MOSI, MISO. No NSS. */
   /* Peripherals alternate function */
   gpio.Mode = GPIO_MODE_AF_PP;
-  gpio.Speed = GPIO_SPEED_FREQ_HIGH;  
-  /* gpio.Speed = GPIO_SPEED_FREQ_LOW;  */ 
+  /* gpio.Speed = GPIO_SPEED_FREQ_HIGH;  */ 
+  gpio.Speed = GPIO_SPEED_FREQ_LOW; 
   
   gpio.Pull = GPIO_NOPULL;
   gpio.Alternate = SPI_GPIO_AF;
@@ -392,7 +392,7 @@ static uint8_t s_tx_cmd_other_bootmode(uint8_t endmark)
 
 static uint8_t s_dummy_buffer[64];
 #define RX_EVENT_MAX_DECODE_SIZE 64
-static uint8_t s_rx_event_decode_buf[RX_EVENT_MAX_DECODE_SIZE] = {0};
+static uint8_t s_rx_event_decode_buf[RX_EVENT_MAX_DECODE_SIZE] __attribute__((aligned)) = {0};
 
 static void s_rx_msg_handler(uint8_t data)
 {

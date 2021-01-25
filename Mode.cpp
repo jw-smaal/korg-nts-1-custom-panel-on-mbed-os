@@ -33,9 +33,13 @@ Mode::Mode(Scale *scaleParent,
 	numOfNotes = numOfNotesArg;
 	privName = modeNameArg;
 	uint8_t rootNote = scaleParent->rootNote;
+
+	printf("Mode constructor");
+
 	
 	// Create the notes for this mode
 	for(uint8_t j = 0, k = rootNote; j < numOfNotes; j++) {
+			printf("Creating notes:%d --", j);
 		Note note;
 		// If the numOfNotes is bigger than the
 		// const array we have a out of bounds issue.
