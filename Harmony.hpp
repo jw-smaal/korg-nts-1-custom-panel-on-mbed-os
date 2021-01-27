@@ -14,7 +14,9 @@
 #define Harmony_hpp
 
 //#include <stdio.h>
-//#include <iostream>
+#ifndef TARGET_LIKE_MBED
+ #include <iostream>
+#endif
 
 // This is the top level include file for the following Class implementations
 #include "Chord.hpp"

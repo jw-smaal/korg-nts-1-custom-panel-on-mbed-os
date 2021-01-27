@@ -32,14 +32,14 @@ ChordProgression::ChordProgression
 : scale(scl), fullrangemode(scl.modes[modenum])
 {
 	 Mode mode = scale.modes[modenum];
-	 
-	 #if MCU_LARGE_RAM  
+	
+#ifndef TARGET_LIKE_MBED
 	 std::cout << "ChordProgression::"
 				<< scale.Text()
 				<< "|" << mode.Name() << "|"
 				<< std::endl;
-	#endif 
-
+#endif
+	
 	 // We need to add another octave to the modes of this scale
 	std::vector<Note> secondoctave;
 	for(Note note: mode.notes) {
@@ -54,28 +54,28 @@ ChordProgression::ChordProgression
 	 // What mode to choose?  
 	 switch(progType) {
 		 case Type::II_V_I:
-		    #if 0 
+#ifndef TARGET_LIKE_MBED
 			 std::cout << "II V I progression" << std::endl;
 			 std::cout << "|"
 			 << mode.notes[Offset::II + 0].Name() << "|"
-			 << mode.notes[Offset::II + 2].Name() << "|"
-			 << mode.notes[Offset::II + 4].Name() << "|"
-			 << mode.notes[Offset::II + 6].Name() << std::endl;
+			 << mode.notes[Offset::II + Offset::III].Name() << "|"
+			 << mode.notes[Offset::II + Offset::V].Name() << "|"
+			 << mode.notes[Offset::II + Offset::VII].Name() << std::endl;
 			 
 			 // In order to do these progressions we need
 			 // to have two octaves at least in the scale.
 			 std::cout << "|"
 			 << mode.notes[Offset::V + 0].Name() << "|"
-			 << mode.notes[Offset::V + 2].Name() << "|"
-			 << mode.notes[Offset::V + 4].Name() << "|"
-			 << mode.notes[Offset::V + 6].Name() << std::endl;
+			 << mode.notes[Offset::V + Offset::III].Name() << "|"
+			 << mode.notes[Offset::V + Offset::V].Name() << "|"
+			 << mode.notes[Offset::V + Offset::VII].Name() << std::endl;
 			 
 			 std::cout << "|"
 			 << mode.notes[Offset::I + 0].Name() << "|"
-			 << mode.notes[Offset::I + 2].Name() << "|"
-			 << mode.notes[Offset::I + 4].Name() << "|"
-			 << mode.notes[Offset::I + 6].Name() << std::endl;
-		     #endif 
+			 << mode.notes[Offset::I + Offset::III].Name() << "|"
+			 << mode.notes[Offset::I + Offset::V].Name() << "|"
+			 << mode.notes[Offset::I + Offset::VII].Name() << std::endl;
+#endif
 			 break;
 		 case Type::V_of_V:
 			 break;
@@ -99,20 +99,17 @@ ChordProgression::ChordProgression
 		note.number = (unsigned int)note.number % 12;
 	//	std::cout << "[" << j << "]"<< note.Name() << ".";
 	}
-
-#if MCU_LARGE_MEMORY 	
+	
 	mode.Order(Mode::NoteOrder::LOW_TO_HIGH);
+#ifndef TARGET_LIKE_MBED
 	for(Note note: mode.notes) {
-		#if MCU_LARGE_RAM   
 		std::cout << note.Text()
 		<< "(" << (unsigned int) note.number  << ").";
-		#endif 
 	}
-	
 	std::cout << std::endl;
-
-#endif 
+#endif 	
 
  };
+
 	
 /* EOF */

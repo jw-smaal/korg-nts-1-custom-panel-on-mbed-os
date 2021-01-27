@@ -11,7 +11,6 @@
  * @copyright APACHE-2.0
  */
 #include "Scale.hpp"
-#include "mbed.h"
 
 
 /*
@@ -43,8 +42,6 @@ Scale::Scale() noexcept{
  */
 Scale::Scale(TypeOfScale typeOfScaleArg,
 			 uint8_t rootNoteArg) noexcept{
-	printf("Scale Constructor --");
-
 	// MIDI notes cannot be higher than 128
 	// instead of throwing an exception we just truncate it to the
 	// higest value.
@@ -184,14 +181,10 @@ Scale::Scale(TypeOfScale typeOfScaleArg,
 	//	 We give a pointer to ourselves 'this' as the mode
 	//	 must know what kind of scale it is a mode of.
 	for(unsigned int i = 0; i < numOfModes; i++) {
-		printf("Creating modes --");
 		Mode mode(this, i, numOfNotes, "mode" + std::to_string(i + 1));
-		//MBED_ERROR1(MBED_MAKE_ERROR(MBED_MODULE_APPLICATION, MBED_ERROR_CODE_INVALID_ARGUMENT), "Buffer pointer is Null", 1024/* Size of allocation which failed */ );
-		printf("about to push back mode --");
 		modes.push_back(mode);
-		printf("push back done");
 	}
-	printf("Modes created --");
+	
 };
 
 

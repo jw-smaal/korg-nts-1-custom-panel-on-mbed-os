@@ -14,13 +14,13 @@
 #define Scale_hpp
 
 #include <vector>
-#include <array>
-#include <deque>
-
+#ifndef TARGET_LIKE_MBED
+ #include <deque>
+ #include <array>
+#endif 
 
 #include "Mode.hpp"
 //#include "Harmony.hpp"
-
 
 
 class Scale {
@@ -111,11 +111,14 @@ private:
 };
 
 
+
+
 /*
  * TODO: work in progress
  * TODO: see if we can rid of the c style arrays in the
  * TODO: scale definitions.
  */
+#ifndef TARGET_LIKE_MBED
 class NewScale {
 public:
 	NewScale() noexcept;
@@ -187,7 +190,7 @@ private:
 	};
 	
 };
-
+#endif
 
 
 #endif /* Scale_hpp */

@@ -31,12 +31,21 @@ public:
 		 std::string modeNameArg) noexcept;
 	unsigned int modeNum;
 	unsigned long numOfNotes;
-	
+
+#ifndef TARGET_LIKE_MBED
 	enum class NoteOrder : int {
 		LOW_TO_HIGH,
 		HIGH_TO_LOW,
 		RANDOM
 	};
+#else
+	// <random> causes code to be too large for the MCU
+	// that is why we leave that option out.
+	enum class NoteOrder : int {
+		LOW_TO_HIGH,
+		HIGH_TO_LOW
+	};
+#endif
 	void Order(NoteOrder noteOrderArg);
 	
 	const std::string Name(){
@@ -53,7 +62,6 @@ public:
 private:
 	std::string privName;
 	
-	#if MCU_LARGE_RAM   
 	// Used to sort notes e.g.
 	// sort(notes.begin(), notes.end(), Mode::CompareInterval);
 	static bool privLowToHigh(Note note1, Note note2) {
@@ -62,7 +70,6 @@ private:
 	static bool privHighToLow(Note note1, Note note2) {
 		return (note1.number > note2.number);
 	};
-	#endif 
 private:
 	/*
 	 * Scales are listed below as arrays of
@@ -302,7 +309,7 @@ private:
 	
 	// -----------------------------------------------------------------------
 private:
-#ifndef MBED_MAJOR_VERSION 
+#ifndef TARGET_LIKE_MBED
 	/*
 	 * Scales definition in intervals.
 	 * TODO: work in progress
@@ -343,7 +350,6 @@ private:
 		{Iv::W, Iv::W, Iv::H, Iv::W, Iv::W, Iv::H, Iv::W}	// MIXOLYDIAN
 	} };
 #endif 
-
 };
 
 

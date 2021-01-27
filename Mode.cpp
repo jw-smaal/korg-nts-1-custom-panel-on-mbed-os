@@ -13,8 +13,11 @@
  * @date 13/12/2020
  * @copyright APACHE-2.0
  */
-#include <algorithm>
-//#include <random>
+#ifndef TARGET_LIKE_MBED
+ #include <random>
+ #include <algorithm>
+#endif
+
 #include "Harmony.hpp"
 #include "Mode.hpp"
 
@@ -33,13 +36,9 @@ Mode::Mode(Scale *scaleParent,
 	numOfNotes = numOfNotesArg;
 	privName = modeNameArg;
 	uint8_t rootNote = scaleParent->rootNote;
-
-	printf("Mode constructor");
-
 	
 	// Create the notes for this mode
 	for(uint8_t j = 0, k = rootNote; j < numOfNotes; j++) {
-			printf("Creating notes:%d --", j);
 		Note note;
 		// If the numOfNotes is bigger than the
 		// const array we have a out of bounds issue.
@@ -148,9 +147,10 @@ Mode::Mode(Scale *scaleParent,
 
 /** This function reorders the notes in the mode
  */
- #if 0
 void Mode::Order(NoteOrder noteOrderArg) {
+#ifndef TARGET_LIKE_MBED
 	std::random_device rd;
+#endif 
 	switch(noteOrderArg) {
 		case NoteOrder::LOW_TO_HIGH:
 			sort(notes.begin(), notes.end(), Mode::privLowToHigh);
@@ -158,14 +158,15 @@ void Mode::Order(NoteOrder noteOrderArg) {
 		case NoteOrder::HIGH_TO_LOW:
 			sort(notes.begin(), notes.end(), Mode::privHighToLow);
 			break;
+#ifndef TARGET_LIKE_MBED
 		case NoteOrder::RANDOM:
 			std::shuffle(notes.begin(), notes.end(), rd);
 			break;
+#endif
 		default:
 			break;
 	}
 }
-#endif 
 
 
 // EOF

@@ -101,16 +101,16 @@ int main()
 
 
 	// Setting up some initial parameters to play with  
-	nts1.paramChange(NTS1::PARAM_ID_OSC_BASE, 0, 1);
+	//nts1.paramChange(NTS1::PARAM_ID_OSC_BASE, 0, 1);
 	nts1.paramChange(NTS1::PARAM_ID_OSC_TYPE, 0, 3); 
 	
-	nts1.paramChange(NTS1::PARAM_ID_REV_BASE, 0, 1);
+	//nts1.paramChange(NTS1::PARAM_ID_REV_BASE, 0, 1);
 	nts1.paramChange(NTS1::PARAM_ID_REV_TYPE, 0, 2);
 	nts1.paramChange(NTS1::PARAM_ID_REV_DEPTH, 0, 1024); 
 	nts1.paramChange(NTS1::PARAM_ID_REV_TIME, 0, 600); 
 	nts1.paramChange(NTS1::PARAM_ID_REV_MIX, 0, 1024); 
 
-	nts1.paramChange(NTS1::PARAM_ID_FILT_BASE, 0, 1);
+	//nts1.paramChange(NTS1::PARAM_ID_FILT_BASE, 0, 1);
 	nts1.paramChange(NTS1::PARAM_ID_FILT_TYPE, 0, 1);
 
 
@@ -185,7 +185,6 @@ int main()
 	}  // End of while(true) 
 	nts1.teardown(); 
 	return -1;  
-
 }	// End of main()
 
 /* EOF */ 
